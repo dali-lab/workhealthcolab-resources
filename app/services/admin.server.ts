@@ -2,11 +2,12 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { createCookieSessionStorage, redirect } from "react-router";
 
 // The admin portal (/admin): one shared password from the environment, no
-// usernames. It's off unless ADMIN_ENABLED is "true" AND a password of at
-// least 12 characters AND an admin database connection are set; when off,
-// every /admin address answers 404, as if it didn't exist.
+// usernames. It's off unless ADMIN_ENABLED is "true" AND a password AND an
+// admin database connection are set; when off, every /admin address answers
+// 404, as if it didn't exist. In production the password must be at least 12
+// characters; local development accepts any, so a throwaway one works.
 
-const MIN_PASSWORD_LENGTH = 12;
+const MIN_PASSWORD_LENGTH = process.env.NODE_ENV === "production" ? 12 : 1;
 const SESSION_HOURS = 8;
 
 let warned = false;

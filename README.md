@@ -23,7 +23,7 @@ It's **off by default**. `/admin` answers "not found" unless all three of these 
 | Variable | What it is |
 | --- | --- |
 | `ADMIN_ENABLED` | `true` to switch the portal on. Anything else, or unset, keeps it off. |
-| `ADMIN_PASSWORD` | The password, at least 12 characters. Use a long random one. |
+| `ADMIN_PASSWORD` | The password. In production it must be at least 12 characters: use a long random one. Local development accepts any. |
 | `ADMIN_DATABASE_URL` | A connection as the role `resources_admin`, which can change resources and nothing else. |
 
 Good to know:
