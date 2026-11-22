@@ -4,7 +4,7 @@ export type Resource = { id: string; title: string; url: string; description: st
 
 /** Every approved resource, A to Z. (The view only ever returns approved ones.) */
 export async function listResources(): Promise<Resource[]> {
-  const rows = await prisma.resource.findMany({
+  const rows = await prisma.publicResource.findMany({
     select: { id: true, title: true, url: true, description: true, tags: true },
     orderBy: { title: "asc" },
   });
