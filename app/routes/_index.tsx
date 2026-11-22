@@ -120,23 +120,6 @@ export default function Library({ loaderData }: Route.ComponentProps) {
               ))}
             </ul>
           )}
-
-          <section aria-labelledby="how" className="flex flex-col gap-6 rounded-[20px] bg-brand-soft px-6 py-9 sm:px-8">
-            <h2 id="how" className="text-[26px] font-semibold tracking-tight">
-              How a resource gets on this list
-            </h2>
-            <ol className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
-              <Step number={1} title="A coach suggests it">
-                Our coaches add services they've seen help the people they work with.
-              </Step>
-              <Step number={2} title="CoLab reviews it">
-                Our team checks each one before it goes on the list.
-              </Step>
-              <Step number={3} title="It's listed here">
-                Free for anyone to use. You don't need an account or a referral.
-              </Step>
-            </ol>
-          </section>
         </div>
       </main>
 
@@ -186,18 +169,6 @@ function ResourceCard({ resource, tile }: { resource: Resource; tile: string }) 
         Visit website
         <ArrowUpRight size={16} strokeWidth={2.2} aria-hidden />
       </a>
-    </li>
-  );
-}
-
-function Step({ number, title, children }: { number: number; title: string; children: React.ReactNode }) {
-  return (
-    <li className="flex flex-col gap-2">
-      <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-brand text-[17px] font-bold text-white">
-        {number}
-      </span>
-      <h3 className="text-[17px] font-semibold">{title}</h3>
-      <p className="text-[15.5px] leading-relaxed text-ink-soft">{children}</p>
     </li>
   );
 }
