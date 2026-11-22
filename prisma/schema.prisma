@@ -1,0 +1,29 @@
+// A partial schema: the one thing this site reads from the Work Health CoLab
+// database. The database itself is owned by the hub (workhealthcolab-hub).
+//
+// NEVER run `prisma db push` or `prisma migrate` from this repo. With only
+// this model, Prisma would try to delete every other table. (The site's
+// database role can't change anything, but don't rely on that alone.)
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../app/generated/prisma"
+  moduleFormat = "esm"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Reads the public_resources view: approved resources only. The hub defines
+// the view in its prisma/public-access.sql; keep these fields matching it.
+model Resource {
+  id          String   @id @db.Uuid
+  title       String
+  url         String
+  description String?
+  updated_at  DateTime
+
+  @@map("public_resources")
+}

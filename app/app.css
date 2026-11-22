@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  /* Work Health CoLab design guide: Manrope; deep teal, mint, ivory, ink. */
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-brand: #086b66;
+  --color-brand-dark: #065652;
+  --color-brand-mid: #0b7a74;
+  --color-brand-600: #138e88;
+  --color-brand-200: #9fd8cf;
+  --color-brand-soft: #e6f4f0;
+
+  --color-canvas: #faf9f6;
+  --color-line: #dfe8e9;
+  --color-line-strong: #c9d5d7;
+  --color-ink: #1e3042;
+  --color-ink-soft: #3f5266;
+  --color-ink-muted: #637486;
+
+  /* Tile tints (with text shades that pass contrast on them). */
+  --color-sky-bg: #eaf4fa;
+  --color-sky-fg: #2f5f8c;
+  --color-warm-bg: #fcf1e3;
+  --color-warm-fg: #8a5116;
+}
+
+html,
+body {
+  @apply bg-canvas text-ink antialiased;
+}
