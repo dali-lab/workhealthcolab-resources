@@ -21,7 +21,7 @@ You need Node 22 or newer and a connection string for the `resources_reader` rol
 ```sh
 npm install
 cp .env.example .env.local   # then put the real DATABASE_URL in .env.local
-npm run dev                  # http://localhost:3001
+npm run dev                  # http://localhost:4000
 ```
 
 `npm run typecheck` checks types. `npm run build` then `npm start` runs the production build.

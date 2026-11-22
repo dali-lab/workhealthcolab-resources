@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter()],
   server: {
     // The hub runs on 3000.
-    port: 3001,
+    port: 4000,
     strictPort: true,
   },
   resolve: {
