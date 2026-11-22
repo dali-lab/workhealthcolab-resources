@@ -50,7 +50,7 @@ npm run dev                  # http://localhost:4000
 
 ## Deployment
 
-The site runs on [Fly.io](https://fly.io) as `workhealthcolab-resources` (https://workhealthcolab-resources.fly.dev). Merging into `main` deploys it: the GitHub Actions workflow `.github/workflows/fly-deploy.yml` builds the `Dockerfile` and releases it, using the repo secret `FLY_API_TOKEN`.
+The site runs on [Fly.io](https://fly.io) as `workhealthcolab-resources`, at https://resources.workhealthcolab.com (and https://workhealthcolab-resources.fly.dev). Merging into `main` deploys it: the GitHub Actions workflow `.github/workflows/fly-deploy.yml` builds the `Dockerfile` and releases it, using the repo secret `FLY_API_TOKEN`.
 
 The environment variables the app reads are set as Fly secrets (`fly secrets set NAME=value -a workhealthcolab-resources`):
 
