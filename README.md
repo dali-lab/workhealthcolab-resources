@@ -8,7 +8,7 @@ It's a small, read-only website. Coaches and admins add and approve resources in
 
 The site reads CoLab's database directly, but only one thing in it:
 
-- The hub owns the database. It defines a view, `public_resources`, that returns approved resources only: `id`, `title`, `url`, `description`, `updated_at`.
+- The hub owns the database. It defines a view, `public_resources`, that returns approved resources only: `id`, `title`, `url`, `description`, `updated_at`, and `tags` (a list of tag names).
 - This site connects as a database role, `resources_reader`, that can read that view and nothing else. It can't see any other table or change anything.
 - `prisma/schema.prisma` here is a partial schema: one model, `Resource`, mapped to that view.
 
@@ -40,4 +40,4 @@ app/
 prisma/schema.prisma             the partial schema
 ```
 
-Search is a plain form (`/?q=benefits`) answered by the server, so the page works without JavaScript; with it, results update as you type.
+Search is a plain form (`/?q=benefits`) and each tag filter is a link (`/?tag=Benefits`), both answered by the server, so the page works without JavaScript; with it, results update as you type. Tags are created and managed in the hub.

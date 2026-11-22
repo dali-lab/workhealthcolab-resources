@@ -24,6 +24,8 @@ model Resource {
   url         String
   description String?
   updated_at  DateTime
+  // Tag names, A to Z. The hub keeps the list of tags; this is read-only.
+  tags        String[]
 
   @@map("public_resources")
 }
