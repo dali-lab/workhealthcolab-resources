@@ -1,0 +1,31 @@
+# Fly.io configuration for the public resource library.
+# See https://fly.io/docs/reference/configuration/
+#
+# There is deliberately no release_command: this app never changes the
+# database (see README).
+
+app = 'workhealthcolab-resources'
+primary_region = 'iad'
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  # /health answers without touching the database.
+  [[http_service.checks]]
+    method = 'GET'
+    path = '/health'
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '10s'
+
+[[vm]]
+  memory = '512mb'
+  cpus = 1
+  memory_mb = 512

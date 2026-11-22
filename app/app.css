@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  /* Work Health CoLab design guide: Manrope; deep teal, mint, ivory, ink. */
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-brand: #086b66;
+  --color-brand-dark: #065652;
+  --color-brand-mid: #0b7a74;
+  --color-brand-600: #138e88;
+  --color-brand-200: #9fd8cf;
+  --color-brand-soft: #e6f4f0;
+
+  --color-canvas: #faf9f6;
+  --color-line: #dfe8e9;
+  --color-line-strong: #c9d5d7;
+  --color-ink: #1e3042;
+  --color-ink-soft: #3f5266;
+  --color-ink-muted: #637486;
+
+  --color-warm-bg: #fcf1e3;
+  --color-warm-fg: #8a5116;
+  --color-danger: #9e3f48;
+  --color-danger-bg: #fbeff0;
+  --color-danger-line: #efcdd0;
+}
+
+html,
+body {
+  @apply bg-canvas text-ink antialiased;
+}
+
+/* The admin portal's form controls and buttons. */
+@layer components {
+  .input {
+    @apply h-11 w-full rounded-lg border border-line-strong bg-white px-3 text-[16px] text-ink placeholder:text-ink-muted focus:border-brand focus:outline-3 focus:outline-brand-200;
+  }
+  .input[aria-invalid="true"] {
+    @apply border-danger;
+  }
+  .button-primary,
+  .button-secondary,
+  .button-danger,
+  .button-quiet {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 text-[15px] font-semibold whitespace-nowrap transition-colors duration-150 disabled:opacity-60;
+  }
+  .button-primary {
+    @apply border-brand bg-brand text-white hover:border-brand-dark hover:bg-brand-dark;
+  }
+  .button-secondary {
+    @apply border-line-strong bg-white text-ink hover:bg-canvas;
+  }
+  .button-danger {
+    @apply border-danger bg-danger text-white;
+  }
+  .button-quiet {
+    @apply border-transparent text-brand hover:bg-brand-soft;
+  }
+  .button-small {
+    @apply min-h-9 px-3 text-[14px];
+  }
+}

@@ -1,0 +1,83 @@
+// A partial schema: only the parts of the Work Health CoLab database this site
+// uses. The database itself is owned by the hub (workhealthcolab-hub).
+//
+// NEVER run `prisma db push` or `prisma migrate` from this repo. With only
+// these models, Prisma would try to delete every other table. (The site's
+// database roles can't do that, but don't rely on that alone.)
+//
+// Keep these models matching the hub's: the view is defined in its
+// prisma/public-access.sql, the tables in its prisma/schema.prisma.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../app/generated/prisma"
+  moduleFormat = "esm"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// What the public pages read: the public_resources view, approved resources
+// only. Read as the role resources_reader (DATABASE_URL).
+model PublicResource {
+  id          String   @id @db.Uuid
+  title       String
+  url         String
+  description String?
+  updated_at  DateTime
+  // Tag names, A to Z.
+  tags        String[]
+
+  @@map("public_resources")
+}
+
+// Everything below is used only by the admin portal (/admin), as the role
+// resources_admin (ADMIN_DATABASE_URL). The tables have more columns in the
+// hub (who added and reviewed a resource); the portal doesn't touch those.
+
+model Resource {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title            String
+  url              String
+  description      String?
+  status           ResourceStatus    @default(PENDING)
+  rejection_reason String?
+  reviewed_at      DateTime?
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+  taggings         ResourceTagging[]
+
+  @@map("resources")
+}
+
+enum ResourceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// The fixed list of tags; resources pick from it. `key` is the name
+// lower-cased with spaces tidied, unique, so "Legal Help" can't be added
+// beside "legal help". Managed here (/admin/tags) and in the hub.
+model ResourceTag {
+  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  key        String            @unique
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
+  taggings   ResourceTagging[]
+
+  @@map("resource_tags")
+}
+
+model ResourceTagging {
+  resource_id String      @db.Uuid
+  resource    Resource    @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  tag_id      String      @db.Uuid
+  tag         ResourceTag @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([resource_id, tag_id])
+  @@map("resource_taggings")
+}
