@@ -34,7 +34,13 @@ export function ResourceForm({
           Tags <span className="font-normal text-ink-muted">(optional)</span>
         </legend>
         {tags.length === 0 ? (
-          <p className="text-[14px] text-ink-muted">No tags yet. Tags are added in the CoLab hub.</p>
+          <p className="text-[14px] text-ink-muted">
+            No tags yet.{" "}
+            <Link to="/admin/tags" className="font-semibold text-brand hover:underline">
+              Add some
+            </Link>
+            .
+          </p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (

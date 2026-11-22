@@ -1,4 +1,4 @@
-import { Form, Link, Outlet } from "react-router";
+import { Form, Link, NavLink, Outlet } from "react-router";
 import { requireAdmin } from "~/services/admin.server";
 import type { Route } from "./+types/admin";
 
@@ -26,6 +26,25 @@ export default function AdminLayout() {
               Resource library <span className="font-medium text-ink-muted">admin</span>
             </span>
           </Link>
+          <nav aria-label="Admin" className="flex gap-1">
+            {[
+              { to: "/admin", label: "Resources", end: true },
+              { to: "/admin/tags", label: "Tags", end: false },
+            ].map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) =>
+                  `flex min-h-11 items-center rounded-lg px-3.5 text-[15px] font-semibold ${
+                    isActive ? "bg-brand-soft text-brand" : "text-ink-muted hover:text-ink"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
           <div className="flex items-center gap-2">
             <a href="/" target="_blank" rel="noreferrer" className="button-quiet">
               View the public site

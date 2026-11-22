@@ -16,7 +16,7 @@ The site reads CoLab's database directly, but only one thing in it:
 
 ## Admin portal (optional)
 
-A simple page at `/admin` to add, edit, approve, hide and delete resources. It's protected by one shared password: there are no usernames or emails.
+A simple page at `/admin` to add, edit, approve, hide and delete resources, and manage their tags. It's protected by one shared password: there are no usernames or emails.
 
 It's **off by default**. `/admin` answers "not found" unless all three of these are set:
 
@@ -32,7 +32,8 @@ Good to know:
 - Signing in lasts 8 hours. Changing `ADMIN_PASSWORD` signs everyone out.
 - Five wrong passwords in a row close sign-in to that visitor for 15 minutes.
 - Anyone with the password can change what the public site shows, so share it with as few people as possible, and switch the portal off (`ADMIN_ENABLED=false`) when it isn't needed.
-- A resource added here goes on the site straight away. Tags are picked from the list kept in the hub; they can't be created here.
+- A resource added here goes on the site straight away.
+- Tags are a fixed list, managed at `/admin/tags` (add, rename, merge, delete) and in the hub. Resources pick from that list, which keeps tags consistent.
 - Behind a proxy that ends TLS (Fly, for example), list the site's address under `allowedActionOrigins` in `react-router.config.ts`, or the portal's forms are refused.
 
 ## Run it

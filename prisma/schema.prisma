@@ -58,12 +58,16 @@ enum ResourceStatus {
   REJECTED
 }
 
-// The list of tags. The portal can read it; tags are added and renamed in the hub.
+// The fixed list of tags; resources pick from it. `key` is the name
+// lower-cased with spaces tidied, unique, so "Legal Help" can't be added
+// beside "legal help". Managed here (/admin/tags) and in the hub.
 model ResourceTag {
-  id       String            @id @db.Uuid
-  name     String
-  key      String            @unique
-  taggings ResourceTagging[]
+  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  key        String            @unique
+  created_at DateTime          @default(now())
+  updated_at DateTime          @updatedAt
+  taggings   ResourceTagging[]
 
   @@map("resource_tags")
 }

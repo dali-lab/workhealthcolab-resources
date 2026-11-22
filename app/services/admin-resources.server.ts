@@ -99,3 +99,72 @@ export async function parseResource(form: FormData): Promise<{ input: ResourceIn
   const tags = picked.length ? await db().resourceTag.findMany({ where: { id: { in: picked } }, select: { id: true } }) : [];
   return { input: { title, url, description, tagIds: tags.map((t) => t.id) }, errors: null };
 }
+
+// Tags: a fixed list, so they stay consistent. The same rules as the hub.
+
+/** Every tag, A to Z, with how many resources carry it. */
+export async function listTagsWithCounts() {
+  const tags = await db().resourceTag.findMany({
+    select: { id: true, name: true, _count: { select: { taggings: true } } },
+    orderBy: { key: "asc" },
+  });
+  return tags.map((t) => ({ id: t.id, name: t.name, count: t._count.taggings }));
+}
+
+/** "  Legal   Help " → name "Legal Help", key "legal help" (what has to be unique). */
+function tagName(raw: string) {
+  const name = raw.trim().replace(/\s+/g, " ");
+  return { name, key: name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() };
+}
+
+export type TagResult = { ok: true } | { ok: false; error: string };
+
+function checkTagName(name: string): string | null {
+  if (!name) return "Enter a name.";
+  if (name.length > 40) return "Keep the name under 40 characters.";
+  return null;
+}
+
+export async function createTag(raw: string): Promise<TagResult> {
+  const { name, key } = tagName(raw);
+  const problem = checkTagName(name);
+  if (problem) return { ok: false, error: problem };
+  const existing = await db().resourceTag.findUnique({ where: { key } });
+  if (existing) return { ok: false, error: `There's already a tag called “${existing.name}”.` };
+  await db().resourceTag.create({ data: { name, key } });
+  return { ok: true };
+}
+
+/** Renames it on every resource at once: resources point at the tag, not at its name. */
+export async function renameTag(id: string, raw: string): Promise<TagResult> {
+  if (!UUID.test(id)) return { ok: false, error: "That tag no longer exists." };
+  const { name, key } = tagName(raw);
+  const problem = checkTagName(name);
+  if (problem) return { ok: false, error: problem };
+  const existing = await db().resourceTag.findUnique({ where: { key } });
+  if (existing && existing.id !== id) {
+    return { ok: false, error: `There's already a tag called “${existing.name}”. Merge into it instead.` };
+  }
+  const changed = await db().resourceTag.updateMany({ where: { id }, data: { name, key } });
+  return changed.count ? { ok: true } : { ok: false, error: "That tag no longer exists." };
+}
+
+/** Moves every resource from one tag onto another, then deletes the first. */
+export async function mergeTags(fromId: string, intoId: string): Promise<TagResult> {
+  if (fromId === intoId || !UUID.test(fromId) || !UUID.test(intoId)) return { ok: false, error: "Pick a different tag to merge into." };
+  const found = await db().resourceTag.count({ where: { id: { in: [fromId, intoId] } } });
+  if (found !== 2) return { ok: false, error: "That tag no longer exists." };
+  await db().$transaction([
+    db().$executeRaw`
+      INSERT INTO resource_taggings (resource_id, tag_id)
+      SELECT resource_id, ${intoId}::uuid FROM resource_taggings WHERE tag_id = ${fromId}::uuid
+      ON CONFLICT DO NOTHING`,
+    db().resourceTag.delete({ where: { id: fromId } }),
+  ]);
+  return { ok: true };
+}
+
+/** Deletes the tag and takes it off every resource (the resources stay). */
+export async function deleteTag(id: string) {
+  if (UUID.test(id)) await db().resourceTag.deleteMany({ where: { id } });
+}
