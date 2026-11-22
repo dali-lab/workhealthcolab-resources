@@ -48,7 +48,9 @@ function sessions(password: string) {
   return createCookieSessionStorage<{ admin: true }>({
     cookie: {
       name: "resources_admin",
-      path: "/admin",
+      // Not "/admin": the browser loads page data from addresses like
+      // /admin.data, which a cookie limited to /admin isn't sent to.
+      path: "/",
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
