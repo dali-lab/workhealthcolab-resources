@@ -48,6 +48,17 @@ npm run dev                  # http://localhost:4000
 
 `npm run typecheck` checks types. `npm run build` then `npm start` runs the production build.
 
+## Deployment
+
+The site runs on [Fly.io](https://fly.io) as `workhealthcolab-resources` (https://workhealthcolab-resources.fly.dev). Merging into `main` deploys it: the GitHub Actions workflow `.github/workflows/fly-deploy.yml` builds the `Dockerfile` and releases it, using the repo secret `FLY_API_TOKEN`.
+
+The environment variables the app reads are set as Fly secrets (`fly secrets set NAME=value -a workhealthcolab-resources`):
+
+- `DATABASE_URL`: the `resources_reader` connection. Until it's set, the library page says it can't be loaded.
+- `ADMIN_ENABLED`, `ADMIN_PASSWORD`, `ADMIN_DATABASE_URL`: optional. The admin portal stays off, and `/admin` answers "not found", unless all three are set (see above).
+
+Deploying never changes the database: the build only runs `prisma generate`. Fly checks the site with `/health`, which doesn't use the database.
+
 ## Layout
 
 It's a [React Router](https://reactrouter.com) app in framework mode with file-based routing: each file in `app/routes` is a page.
@@ -60,6 +71,7 @@ app/
   services/db.server.ts          the read-only Prisma client
   services/admin.server.ts       the portal's on/off switch, password and sign-in
   services/admin-resources.server.ts   the portal's changes to resources
+  routes/health.ts               health check for Fly (no database)
   root.tsx                       HTML shell and error page
   app.css                        Tailwind and the CoLab colors
 prisma/schema.prisma             the partial schema
