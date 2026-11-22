@@ -30,9 +30,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 
-// Tile colors, in turn down the list.
-const TILES = ["bg-brand-soft text-brand", "bg-sky-bg text-sky-fg", "bg-warm-bg text-warm-fg"];
-
 export default function Library({ loaderData }: Route.ComponentProps) {
   const { q, total, resources, unavailable } = loaderData;
   const submit = useSubmit();
@@ -115,8 +112,8 @@ export default function Library({ loaderData }: Route.ComponentProps) {
             </Notice>
           ) : (
             <ul className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5">
-              {resources.map((resource, index) => (
-                <ResourceCard key={resource.id} resource={resource} tile={TILES[index % TILES.length]!} />
+              {resources.map((resource) => (
+                <ResourceCard key={resource.id} resource={resource} />
               ))}
             </ul>
           )}
@@ -143,31 +140,23 @@ export default function Library({ loaderData }: Route.ComponentProps) {
   );
 }
 
-function ResourceCard({ resource, tile }: { resource: Resource; tile: string }) {
+function ResourceCard({ resource }: { resource: Resource }) {
   return (
-    <li className="flex flex-col gap-3.5 rounded-2xl border border-line bg-white p-6">
-      <div className="flex items-center gap-3.5">
-        <span
-          aria-hidden
-          className={`flex size-[52px] flex-none items-center justify-center rounded-[14px] text-[22px] font-bold ${tile}`}
-        >
-          {resource.host.charAt(0).toUpperCase()}
-        </span>
-        <div className="min-w-0">
-          <h2 className="text-[18px] leading-snug font-semibold">{resource.title}</h2>
-          <p className="mt-0.5 truncate text-[14px] font-medium text-ink-muted">{resource.host}</p>
-        </div>
-      </div>
-      {resource.description && <p className="flex-1 text-[16px] leading-relaxed">{resource.description}</p>}
+    <li>
+      {/* The whole card is the link. */}
       <a
         href={resource.url}
         target="_blank"
         rel="noreferrer noopener"
-        aria-label={`Visit ${resource.title} (opens in a new tab)`}
-        className="mt-auto inline-flex min-h-11 items-center gap-2 self-start rounded-lg bg-brand-soft px-4 text-[15px] font-semibold text-brand hover:text-brand-dark"
+        className="group flex h-full flex-col gap-2 rounded-2xl border border-line bg-white p-6 transition-colors duration-150 hover:border-brand focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-200"
       >
-        Visit website
-        <ArrowUpRight size={16} strokeWidth={2.2} aria-hidden />
+        <span className="flex items-start justify-between gap-3">
+          <span className="text-[18px] leading-snug font-semibold group-hover:text-brand">{resource.title}</span>
+          <ArrowUpRight size={18} strokeWidth={2.2} aria-hidden className="mt-0.5 flex-none text-ink-muted group-hover:text-brand" />
+        </span>
+        <span className="truncate text-[14px] font-medium text-brand">{resource.host}</span>
+        {resource.description && <span className="mt-1 text-[16px] leading-relaxed">{resource.description}</span>}
+        <span className="sr-only">(opens in a new tab)</span>
       </a>
     </li>
   );
